@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+  nginx-2:
+    image: nginx:latest
+    restart: always

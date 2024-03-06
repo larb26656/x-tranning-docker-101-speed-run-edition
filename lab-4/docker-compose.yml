@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    networks:
+        - private-network
+  nginx-2:
+    image: nginx:latest
+    restart: always
+    networks:
+        - private-network
+
+networks:
+  private-network:

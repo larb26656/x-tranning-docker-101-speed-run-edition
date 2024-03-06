@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8001:80"
+    volumes:
+      - nginx-html:/usr/share/nginx/html
+    restart: always
+volumes:
+  nginx-html:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/nginx-html
+      o: bind
