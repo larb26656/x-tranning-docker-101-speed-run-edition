@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  node_app:
-    container_name: node_app
+  app:
+    build: ./app
     environment:
       TZ: Asia/Bangkok
       USER_NAME: xconnext
@@ -10,14 +10,10 @@ services:
       DB_USER: root
       DB_PASSWORD: x.dev
       DB_NAME: app_db
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - "30001:3000"
     networks:
       - app_network
-
   db:
     image: mysql:latest
     restart: always

@@ -10,20 +10,19 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error(`Database connection error: ${err.stack}`);
-    return;
-  }
-  console.log('MySQL Connected');
-});
-
 app.get('/', (req, res) => {
   const userName = process.env.USER_NAME || 'Guest';
   res.send(`Greetings, ${userName}! Welcome to the Node.js application.`);
 });
 
 app.get('/db-health', (req, res) => {
+  // db.connect((err) => {
+  //   if (err) {
+  //     console.error(`Database connection error: ${err.stack}`);
+  //     return;
+  //   }
+  //   console.log('MySQL Connected');
+  // });
   db.query('SELECT 1', (err) => {
     if (err) {
       console.error(`Database connection error: ${err.stack}`);
