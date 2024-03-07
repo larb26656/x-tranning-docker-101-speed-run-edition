@@ -15,7 +15,7 @@ services:
     networks:
       - app_network
   db:
-    image: mysql:latest
+    image: mariadb:latest
     restart: always
     environment:
       TZ: Asia/Bangkok
