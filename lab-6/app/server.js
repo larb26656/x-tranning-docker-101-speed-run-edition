@@ -3,12 +3,44 @@ const mysql = require('mysql');
 
 const app = express();
 
-const db = mysql.createConnection({
+const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME
-});
+};
+
+function checkDatabaseConnection(callback) {
+  const db = mysql.createConnection(dbConfig);
+
+  db.connect((err) => {
+    if (err) {
+      console.error(`Database connection error: ${err.stack}`);
+      callback(err);
+      return;
+    }
+    console.log('MySQL Connected');
+
+    db.query('SELECT 1', (queryErr) => {
+      db.end(); // Close the connection after executing the query
+      if (queryErr) {
+        console.error(`Database query error: ${queryErr.stack}`);
+        callback(queryErr);
+        return;
+      }
+      callback(null, 'Database is healthy');
+    });
+  });
+
+  db.on('error', (err) => {
+    console.error(`Database error: ${err.stack}`);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+      // Handle disconnection
+    } else {
+      throw err;
+    }
+  });
+}
 
 app.get('/', (req, res) => {
   const userName = process.env.USER_NAME || 'Guest';
@@ -16,20 +48,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/db-health', (req, res) => {
-  // db.connect((err) => {
-  //   if (err) {
-  //     console.error(`Database connection error: ${err.stack}`);
-  //     return;
-  //   }
-  //   console.log('MySQL Connected');
-  // });
-  db.query('SELECT 1', (err) => {
+  checkDatabaseConnection((err, result) => {
     if (err) {
-      console.error(`Database connection error: ${err.stack}`);
-      res.status(500).send(`Connection to ${process.env.DB_HOST} failed. Please try again.`);
+      res.status(500).send('Database connection error');
       return;
     }
-    res.send(`Connected to ${process.env.DB_HOST} successfully.`);
+    res.send(result);
   });
 });
 
